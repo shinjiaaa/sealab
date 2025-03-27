@@ -1,0 +1,84 @@
+body {
+    -ms-overflow-style: none;
+ }
+ 
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* 질문란 */
+.fristSection {
+    text-align: center;
+}
+
+#textBox {
+    border: 1.5px solid #888888;
+    border-radius: 10px;
+    box-shadow: 0 7px 7px -5px #00000025;
+
+    width: 70rem;
+    height: 4rem;
+
+    margin: 5rem 0 2rem 0;
+}
+
+#textBox:focus {
+    outline: none;
+}
+
+/* 코드 보내기 */
+.secondSection {
+    justify-content: center;
+    display: flex;
+}
+
+#codeBox {
+    border: 1.5px solid #888888;
+    border-radius: 10px;
+    box-shadow: 0 7px 7px -5px #00000025;
+    
+    width: 58.5rem;
+    height: 4rem;
+
+    margin-right: 1.75rem;
+}
+
+#sendBtn {
+    border: 1.5px solid #888888;
+    border-radius: 10px;
+    box-shadow: 0 7px 7px -5px #00000025;
+    background-color: white;
+
+    width: 10rem;
+    height: 4rem;
+
+    font-size: 1.25rem;
+}
+
+#sendBtn:hover {
+    cursor: pointer;
+}
+
+/* FAQ */
+.FAQSection {
+    margin: 7rem auto;
+    width: 100rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+.boldHr {
+    border: 1px solid #464646;
+}
+
+.normalHr {
+    border: 1px solid #c3c3c3;
+}
+
+#Q1, #Q2, #Q3, #Q4, #Q5, #Q6, #Q7, #Q8 {
+    margin: 1.5rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+}

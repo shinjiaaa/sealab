@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/result.css') }}">
+</head>
+<body>
+    <!-- 질문란 -->
+    <section class="fristSection">
+        <input type="text" id="textBox" value="{{ question }}" readonly />
+    </section>
+    
+    <!-- FAQ -->
+    <section class="answerSection">
+        <h1>Answer</h1>
+        <div>
+            <div id="answerBox">{{ answer }}</div>
+            <button id="beforeBtn">
+                <img src="../static/images/beforeBtn.png" class="beforeImg">
+            </button>
+            <button id="nextBtn">
+                <img src="../static/images/nextBtn.png" class="nextImg">
+            </button>        
+        </div>
+    </section>
+
+    <!-- js -->
+    <script src="{{ url_for('static', path='js/result.js') }}" defer></script>
+</body>
+</html>

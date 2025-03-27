@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/faq.css') }}">
+</head>
+<body>
+    <!-- 질문란 -->
+    <section class="fristSection">
+        <input type="text" id="textBox" value="{{ question }}" readonly/>
+    </section>
+
+    <!-- FAQ -->
+    <section class="FAQSection">
+        <h1>FAQ</h1>
+<div>
+    <hr class="boldHr" />
+    <div id="Q1" class="faq-question">{{ faq["Q1"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q2" class="faq-question">{{ faq["Q2"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q3" class="faq-question">{{ faq["Q3"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q4" class="faq-question">{{ faq["Q4"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q5" class="faq-question">{{ faq["Q5"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q6" class="faq-question">{{ faq["Q6"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q7" class="faq-question">{{ faq["Q7"] }}</div>
+    <hr class="normalHr" />
+    <div id="Q8" class="faq-question">{{ faq["Q8"] }}</div>
+    <hr class="normalHr" />
+</div>
+
+    </section>
+
+    <!-- js -->
+    <script src="{{ url_for('static', path='js/faq.js') }}" defer></script>
+</body>
+</html>
