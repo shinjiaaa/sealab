@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from util import openai
 
@@ -16,7 +15,7 @@ faq = {
         "Q5": "Q5. 해당 이슈가 변경한 테스트 케이스는 무엇인가?",
         "Q6": "Q6. 해당 이슈가 변경한 테스트 케이스는 어떤 소스 코드를 대상으로 하는가?",
         "Q7": "Q7. 해당 이슈가 변경한 테스트 케이스는 어떤 패키지를 대상으로 하는가?",
-        "Q8": "Q8. 해당 소스 코드와 연결된 API 문서는 무엇인가?!",
+        "Q8": "Q8. 해당 소스 코드와 연결된 API 문서는 무엇인가?",
     }
 
 @router.get("/", response_class=HTMLResponse)
@@ -26,9 +25,12 @@ async def get_faq_page(request: Request):
 @router.get("/result")
 async def get_answer(question: str, request: Request):
     try:
-        question_text = faq.get(question.strip())
+        question_id = question.split('.')[0].strip()
+
+        question_text = faq.get(question_id)
+
         if not question_text:
-            raise HTTPException(status_code=404, detail="Question not found")
+            raise HTTPException(status_code=404, detail=f"Question '{question_id}' not found in faq.")
 
         answer = openai.get_answer_from_openai(question_text)
 
@@ -39,5 +41,4 @@ async def get_answer(question: str, request: Request):
             })
 
     except Exception as e:
-        print(f"General error: {e}")
         raise HTTPException(status_code=500, detail="Error generating answer")

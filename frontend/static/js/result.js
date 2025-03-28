@@ -37,12 +37,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
 async function fetchAnswer(question) {
     try {
         const response = await fetch(`/result?question=${encodeURIComponent(question)}`);
-        const data = await response.json();
+        
+        const htmlContent = await response.text();  // HTML 형태로 응답 받음
 
-        document.getElementById('answerBox').innerHTML = data.answer || "답변을 가져오지 못했습니다.";
+        // 받은 HTML에서 답변만 추출
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        
+        // 'answerBox' 내부만 갱신
+        const answerContent = doc.querySelector('#answerBox').innerHTML;
+
+        // 기존 내용을 덮어쓰지 않고 'answerBox'에 새 답변을 삽입
+        document.getElementById('answerBox').innerHTML = answerContent;
+
     } catch (error) {
         console.error("답변을 가져오는 중 오류가 발생했습니다.", error);
         document.getElementById('answerBox').innerHTML = "답변을 가져오는 중 오류가 발생했습니다.";
