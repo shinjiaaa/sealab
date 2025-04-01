@@ -32,7 +32,7 @@ faq_cypher_queries = {
         OPTIONAL MATCH (s:TEST_CODE {package: "packageinput"})
         WITH COALESCE(s, t) AS foundNode
         MATCH (issueNode)-[:MODIFY]-(foundNode)
-        WITH issueNode, COUND(foundNode) AS occurrenceCount
+        WITH issueNode, COUNT(foundNode) AS occurrenceCount
         ORDER BY occurrenceCount DESC
         RETURN issueNode, occurrenceCount
     """,
@@ -75,25 +75,42 @@ async def get_faq_page(request: Request):
 async def get_answer(question: str, request: Request):
     try:
         question_id = question.split('.')[0].strip()
-
         question_text = faq.get(question_id)
-        
+
         if not question_text:
             raise HTTPException(status_code=404, detail=f"Question '{question_id}' not found in faq.")
-        
+
         cypher_query = faq_cypher_queries.get(question_id)
-        
         if not cypher_query:
             raise HTTPException(status_code=404, detail=f"Cypher query for '{question_id}' not found.")
 
+        # 동적 쿼리 수정 부분
         if question_id == "Q1":
             placeholder = "filenameinput"
             replacement = "SearchRequest.java"
         elif question_id == "Q2":
             placeholder = "packageinput"
             replacement = "clients.json.jackson"
+        elif question_id == "Q3":
+            placeholder = "issueNum"
+            replacement = "858"
+        elif question_id == "Q4":
+            placeholder = "issueNum"
+            replacement = "858"
+        elif question_id == "Q5":
+            placeholder = "issueNum"
+            replacement = "693"
+        elif question_id == "Q6":
+            placeholder = "issueNum"
+            replacement = "371"
+        elif question_id == "Q7":
+            placeholder = "issueNum"
+            replacement = "362"
+        elif question_id == "Q8":
+            placeholder = "filenameinput"
+            replacement = "Aggregate.java"
         else:
-            raise HTTPException(status_code=404, detail="Unsupported question") 
+            raise HTTPException(status_code=404, detail="Unsupported question")
 
         modified_query = openai.get_answer_from_openai(cypher_query, placeholder, replacement)
 
@@ -101,10 +118,10 @@ async def get_answer(question: str, request: Request):
             raise HTTPException(status_code=500, detail="Error fetching answer from OpenAI")
 
         return templates.TemplateResponse("result.html", {
-            "request": request, 
-            "question": question_text, 
+            "request": request,
+            "question": question_text,
             "answer": modified_query,
-            "cypher_query": modified_query,
+            "cypher_query": cypher_query,  # Cypher query도 결과 페이지에 표시
         })
 
     except Exception as e:
