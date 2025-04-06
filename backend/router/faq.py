@@ -121,7 +121,6 @@ async def get_answer(question: str, request: Request):
             "request": request,
             "question": question_text,
             "answer": modified_query,
-            "cypher_query": cypher_query,  # Cypher query도 결과 페이지에 표시
         })
 
     except Exception as e:
