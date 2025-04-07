@@ -6,7 +6,7 @@ const questionText = {
         "Q5": "Q5. 693번 이슈가 변경한 테스트 케이스는 무엇인가?",
         "Q6": "Q6. 371번 이슈가 변경한 테스트 케이스는 어떤 소스 코드를 대상으로 하는가?",
         "Q7": "Q7. 362번 이슈가 변경한 테스트 케이스는 어떤 패키지를 대상으로 하는가?",
-        "Q8": "Q8. Aggregate.java 코드와 연결된 API 문서는 무엇인가?",
+        "Q8": "Q8. Aggregate.jaava 코드와 연결된 API 문서는 무엇인가?",
 };
 
 document.addEventListener('DOMContentLoaded', function() {

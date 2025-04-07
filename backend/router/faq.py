@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Query, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from util import openai
@@ -71,55 +71,35 @@ faq_cypher_queries = {
 async def get_faq_page(request: Request):
     return templates.TemplateResponse("faq.html", {"request": request, "faq": faq})
 
-@router.get("/result")
-async def get_answer(question: str, request: Request):
+@router.get("/result", response_class=HTMLResponse)
+async def get_answer(
+    question: str = Query(...),
+    replacement: str = Query(...),
+    modifiedText: str = Query(...),  # 새로 추가된 수정된 전체 질문
+    request: Request = None
+):
     try:
         question_id = question.split('.')[0].strip()
-        question_text = faq.get(question_id)
-
-        if not question_text:
-            raise HTTPException(status_code=404, detail=f"Question '{question_id}' not found in faq.")
-
         cypher_query = faq_cypher_queries.get(question_id)
-        if not cypher_query:
-            raise HTTPException(status_code=404, detail=f"Cypher query for '{question_id}' not found.")
 
-        # 동적 쿼리 수정 부분
-        if question_id == "Q1":
+        if not cypher_query:
+            raise HTTPException(status_code=404, detail=f"Query not found for {question_id}.")
+
+        # placeholder 결정
+        if "filenameinput" in cypher_query:
             placeholder = "filenameinput"
-            replacement = "SearchRequest.java"
-        elif question_id == "Q2":
+        elif "packageinput" in cypher_query:
             placeholder = "packageinput"
-            replacement = "clients.json.jackson"
-        elif question_id == "Q3":
+        elif "issueNum" in cypher_query:
             placeholder = "issueNum"
-            replacement = "858"
-        elif question_id == "Q4":
-            placeholder = "issueNum"
-            replacement = "858"
-        elif question_id == "Q5":
-            placeholder = "issueNum"
-            replacement = "693"
-        elif question_id == "Q6":
-            placeholder = "issueNum"
-            replacement = "371"
-        elif question_id == "Q7":
-            placeholder = "issueNum"
-            replacement = "362"
-        elif question_id == "Q8":
-            placeholder = "filenameinput"
-            replacement = "Aggregate.java"
         else:
-            raise HTTPException(status_code=404, detail="Unsupported question")
+            raise HTTPException(status_code=400, detail="No placeholder matched.")
 
         modified_query = openai.get_answer_from_openai(cypher_query, placeholder, replacement)
 
-        if not modified_query:
-            raise HTTPException(status_code=500, detail="Error fetching answer from OpenAI")
-
         return templates.TemplateResponse("result.html", {
             "request": request,
-            "question": question_text,
+            "question": modifiedText,  # 💡 전체 질문을 여기서 표시
             "answer": modified_query,
         })
 

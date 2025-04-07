@@ -11,19 +11,35 @@ body {
     text-align: center;
 }
 
-#textBox {
+#replacement {
     border: 1.5px solid #888888;
     border-radius: 10px;
     box-shadow: 0 7px 7px -5px #00000025;
 
+    font-size: 1rem;
+    
     width: 70rem;
     height: 4rem;
 
-    margin: 5rem 0 2rem 0;
+    margin: 5rem 0.5rem 2rem 0;
+    padding: 0 1rem;
 }
 
-#textBox:focus {
+#replacement:focus, #submitButton {
     outline: none;
+}
+
+#submitButton {
+    border: 1.5px solid #888888;
+    border-radius: 10px;
+    box-shadow: 0 7px 7px -5px #00000025;
+
+    font-size: 1rem;
+
+    width: 6rem;
+    height: 4rem;
+
+    padding: 0 1rem;
 }
 
 /* 코드 보내기 */
