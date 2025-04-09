@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from util import openai
+from util.neo4j import run_cypher_query
 
 router = APIRouter()
 
@@ -9,27 +10,27 @@ templates = Jinja2Templates(directory="../frontend/templates")
 
 # FAQ와 해당하는 Cypher Query 매핑
 faq = {
-    "Q1": "Q1. SearchRequest.java 파일을 변경했던 이슈는 무엇인가?",
-    "Q2": "Q2. clients.json.jackson 패키지를 변경했던 이슈는 무엇인가?",
-    "Q3": "Q3. 858번 이슈가 변경한 소스 코드는 무엇인가?",
-    "Q4": "Q4. 858번 이슈가 변경한 소스 코드는 주로 어떤 패키지인가?",
-    "Q5": "Q5. 693번 이슈가 변경한 테스트 케이스는 무엇인가?",
-    "Q6": "Q6. 371번 이슈가 변경한 테스트 케이스는 어떤 소스 코드를 대상으로 하는가?",
-    "Q7": "Q7. 362번 이슈가 변경한 테스트 케이스는 어떤 패키지를 대상으로 하는가?",
-    "Q8": "Q8. Aggregate.java 코드와 연결된 API 문서는 무엇인가?",
+    "Q1": "Q1. 해당 코드를 변경했던 이슈는 무엇인가?",
+    "Q2": "Q2. 해당 패키지를 변경했던 이슈는 무엇인가?",
+    "Q3": "Q3. 해당 이슈가 변경한 소스 코드는 무엇인가?",
+    "Q4": "Q4. 해당 이슈가 변경한 소스 코드는 주로 어떤 패키지인가?",
+    "Q5": "Q5. 해당 이슈가 변경한 테스트 케이스는 무엇인가?",
+    "Q6": "Q6. 해당 이슈가 변경한 테스트 케이스는 어떤 소스 코드를 대상으로 하는가?",
+    "Q7": "Q7. 해당 이슈가 변경한 테스트 케이스는 어떤 패키지를 대상으로 하는가?",
+    "Q8": "Q8. 해당 소스 코드와 연결된 API 문서는 무엇인가?",
 }
 
 faq_cypher_queries = {
     "Q1": """
         OPTIONAL MATCH (s:SOURCE_CODE {file_name:'filenameinput'})
-        OPTIONAL MATCH (s:TEST_CODE {file_name:'filenameinput'})
+        OPTIONAL MATCH (t:TEST_CODE {file_name:'filenameinput'})
         WITH COALESCE(s, t) AS foundNode
         MATCH (issueNode:ISSUE)-[MODIFY]-(foundNode)
         RETURN issueNode
     """,
     "Q2": """
         OPTIONAL MATCH (s:SOURCE_CODE {package: "packageinput"})
-        OPTIONAL MATCH (s:TEST_CODE {package: "packageinput"})
+        OPTIONAL MATCH (t:TEST_CODE {package: "packageinput"})
         WITH COALESCE(s, t) AS foundNode
         MATCH (issueNode)-[:MODIFY]-(foundNode)
         WITH issueNode, COUNT(foundNode) AS occurrenceCount
@@ -75,7 +76,7 @@ async def get_faq_page(request: Request):
 async def get_answer(
     question: str = Query(...),
     replacement: str = Query(...),
-    modifiedText: str = Query(...),  # 새로 추가된 수정된 전체 질문
+    modifiedText: str = Query(...),
     request: Request = None
 ):
     try:
@@ -85,7 +86,6 @@ async def get_answer(
         if not cypher_query:
             raise HTTPException(status_code=404, detail=f"Query not found for {question_id}.")
 
-        # placeholder 결정
         if "filenameinput" in cypher_query:
             placeholder = "filenameinput"
         elif "packageinput" in cypher_query:
@@ -95,12 +95,17 @@ async def get_answer(
         else:
             raise HTTPException(status_code=400, detail="No placeholder matched.")
 
+        # GPT로부터 변환된 전체 Cypher 쿼리 받기
         modified_query = openai.get_answer_from_openai(cypher_query, placeholder, replacement)
+
+        # Neo4j에 실행 요청 보내기
+        neo4j_result = run_cypher_query(modified_query)
 
         return templates.TemplateResponse("result.html", {
             "request": request,
-            "question": modifiedText,  # 💡 전체 질문을 여기서 표시
-            "answer": modified_query,
+            "question": modifiedText,
+            "answer": modified_query, 
+            "query_result": neo4j_result,
         })
 
     except Exception as e:

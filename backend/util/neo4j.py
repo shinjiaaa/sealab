@@ -15,12 +15,11 @@ username = "neo4j"  # Neo4j 사용자명
 # Neo4j 드라이버 설정
 driver = GraphDatabase.driver(uri, auth=(username, neo4j_password))
 
-def run_cypher_query(query: str):
-    """Cypher 쿼리를 실행하고 결과를 반환하는 함수"""
+def run_cypher_query(query):
     try:
         with driver.session() as session:
             result = session.run(query)
             return [record.data() for record in result]
     except Exception as e:
-        print(f"Error while running Cypher query: {e}")
-        return None
+        print("쿼리 실행 중 오류 발생:", e)
+        return {"error": str(e)}

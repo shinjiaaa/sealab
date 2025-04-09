@@ -17,6 +17,24 @@
         <h1>Answer</h1>
         <div>
             <div id="answerBox">{{ answer }}</div>
+            <h2>Neo4j 실행 결과</h2>
+            {% if query_result.error %}
+            <div style="color: red;">
+                ❌ 오류 발생: {{ query_result.error }}
+            </div>
+            {% else %}
+            <!-- 기존 결과 테이블 출력 -->
+            <table>
+                {% for row in query_result %}
+                <tr>
+                    {% for key, value in row.items() %}
+                    <td>{{ key }}: {{ value }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+
             <button id="beforeBtn">
                 <img src="../static/images/beforeBtn.png" class="beforeImg">
             </button>
