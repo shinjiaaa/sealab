@@ -68,10 +68,12 @@ faq_cypher_queries = {
     """,
 }
 
+# Faq Page
 @router.get("/", response_class=HTMLResponse)
 async def get_faq_page(request: Request):
     return templates.TemplateResponse("faq.html", {"request": request, "faq": faq})
 
+# Result Page
 @router.get("/result", response_class=HTMLResponse)
 async def get_answer(
     question: str = Query(...),
@@ -95,7 +97,7 @@ async def get_answer(
         else:
             raise HTTPException(status_code=400, detail="No placeholder matched.")
 
-        # GPT로부터 변환된 전체 Cypher 쿼리 받기
+        # GPT한테 변환된 전체 Cypher 쿼리 받기
         modified_query = openai.get_answer_from_openai(cypher_query, placeholder, replacement)
 
         # Neo4j에 실행 요청 보내기
@@ -103,8 +105,8 @@ async def get_answer(
 
         return templates.TemplateResponse("result.html", {
             "request": request,
-            "question": modifiedText,
-            "answer": modified_query, 
+            "question": modifiedText, # 최종 질문 (user가 변경한)
+            "answer": modified_query, # 최종 답변
             "query_result": neo4j_result,
         })
 
