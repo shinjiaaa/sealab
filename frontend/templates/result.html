@@ -16,9 +16,8 @@
     <section class="answerSection">
         <h1>Answer</h1>
         <div>
-            <div id="answerBox">{{ answer }}</div>
-            <h2>Neo4j 실행 결과</h2>
-            {% if query_result.error %}
+            <div id="answerBox">
+                {% if query_result.error %}
                 error: {{ query_result.error }}
             {% else %}
             <table> 
@@ -31,13 +30,17 @@
                 {% endfor %}
             </table>
             {% endif %}
+            </div>
+            <h2>Cypher Query</h2>
+            {{ answer }}
+            
 
-            <button id="beforeBtn">
+            <!-- <button id="beforeBtn">
                 <img src="../static/images/beforeBtn.png" class="beforeImg">
             </button>
             <button id="nextBtn">
                 <img src="../static/images/nextBtn.png" class="nextImg">
-            </button>        
+            </button>         -->
         </div>
     </section>
 
