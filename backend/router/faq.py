@@ -61,9 +61,9 @@ faq_cypher_queries = {
         RETURN package, occurrenceCount
     """,
     "Q8": """
-        MATCH (s:SOURCE_CODE {file_name:"filenameinput"})
+        MATCH (s:SOURCE_CODE {file_name:'filenameinput'})
         MATCH (s)-[:TESTED]-(t)
-        MATCH (s)-[:TESTED]-(apiNode)
+        MATCH (t)-[:EXPLAINED]-(apiNode)
         RETURN apiNode
     """,
 }
