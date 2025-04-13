@@ -47,22 +47,24 @@ faq_cypher_queries = {
         ORDER BY packageCount DESC
     """,
     "Q5": """
-        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(testNode:TEST_CODE)
+        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(testNode:TEST_CASE)
         return (testNode)
     """,
     "Q6": """
-        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(testNode: TEST_CODE)
-        MATCH (sourceNode:SOURCE_CODE)-[:TESTED]-(testNode)
+        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(testNode: TEST_CASE)
+        MATCH (sourceNode:SOURCE_CODE)-[:TEST]-(testNode)
         RETURN sourceNode
     """,
     "Q7": """
-        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(connectedNode: TEST_CODE)
-        MATCH (sourceNode:SOURCE_CODE)-[:TESTED]-(testNode)
+        MATCH (i:ISSUE {issue_number:'issueNum'})-[:MODIFY]->(connectedNode: TEST_CASE)
+        MATCH (sourceNode:SOURCE_CODE)-[:TEST]-(testNode)
+        WITH sourceNode.package As package, COUNT(*) AS occurrenceCount
+        ORDER BY occurrenceCount DESC
         RETURN package, occurrenceCount
     """,
     "Q8": """
         MATCH (s:SOURCE_CODE {file_name:'filenameinput'})
-        MATCH (s)-[:TESTED]-(t)
+        MATCH (s)-[:TEST]-(t)
         MATCH (t)-[:EXPLAINED]-(apiNode)
         RETURN apiNode
     """,
