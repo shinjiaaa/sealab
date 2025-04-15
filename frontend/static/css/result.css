@@ -90,9 +90,12 @@ h1 {
     word-break: break-all;
     white-space: pre-line;
 
-    display: grid;
-    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    display: block;
 }
+
 
 /* btn */
 #beforeBtn {

@@ -29,19 +29,6 @@ body {
     outline: none;
 }
 
-#submitButton {
-    border: 1.5px solid #888888;
-    border-radius: 10px;
-    box-shadow: 0 7px 7px -5px #00000025;
-
-    font-size: 1rem;
-
-    width: 6rem;
-    height: 4rem;
-
-    padding: 0 1rem;
-}
-
 /* 코드 보내기 */
 .secondSection {
     justify-content: center;
@@ -59,19 +46,19 @@ body {
     margin-right: 1.75rem;
 }
 
-#sendBtn {
+#submitButton {
     border: 1.5px solid #888888;
     border-radius: 10px;
     box-shadow: 0 7px 7px -5px #00000025;
-    background-color: white;
+    background-color: rgb(231, 231, 231);
 
-    width: 10rem;
+    width: 7rem;
     height: 4rem;
 
-    font-size: 1.25rem;
+    font-size: 1rem;
 }
 
-#sendBtn:hover {
+#submitButton:hover {
     cursor: pointer;
 }
 

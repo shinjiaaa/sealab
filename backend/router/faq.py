@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from util import openai
-from util.neo4j import run_cypher_query
+from util.neo4j import run_cypher_query, convert_to_natural_language
 
 router = APIRouter()
 
@@ -99,17 +99,24 @@ async def get_answer(
         else:
             raise HTTPException(status_code=400, detail="No placeholder matched.")
 
-        # GPT한테 변환된 전체 Cypher 쿼리 받기
+        # OpenAI를 통해 placeholder를 대체한 최종 쿼리 생성
         modified_query = openai.get_answer_from_openai(cypher_query, placeholder, replacement)
 
-        # Neo4j에 실행 요청 보내기
+        # Neo4j 실행 결과
         neo4j_result = run_cypher_query(modified_query)
+
+        # 자연어 결과 생성
+        if isinstance(neo4j_result, list):
+            natural_language = convert_to_natural_language(neo4j_result)
+        else:
+            natural_language = []
 
         return templates.TemplateResponse("result.html", {
             "request": request,
-            "question": modifiedText, # 최종 질문 (user가 변경한)
-            "answer": modified_query, # 최종 답변
+            "question": modifiedText,
+            "answer": modified_query,
             "query_result": neo4j_result,
+            "natural_language": natural_language,
         })
 
     except Exception as e:
