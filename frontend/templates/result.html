@@ -17,19 +17,7 @@
         <h1>Answer</h1>
         <div>
             <div id="answerBox">
-                {% if query_result.error %}
-                    <p>error: {{ query_result.error }}</p>
-                {% else %}
-                    <table> 
-                        {% for row in query_result %}
-                        <tr>
-                            {% for key, value in row.items() %}
-                            <td>{{ key }}: {{ value }}</td>
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
-                    </table>
-                {% endif %}
+                
                 <!-- 자연어 결과 -->
                 {% for sentence in natural_language %}
                     {{ sentence }}
